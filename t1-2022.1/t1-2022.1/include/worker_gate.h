@@ -11,6 +11,11 @@ typedef struct worker_gate
 
 } worker_gate_t;
 
+/**
+ * @brief semafaro para evitar a espera ocupada de procurar se o a primeira posicao do buffet esta livre
+ * 
+ */
+extern sem_t ratchet;
 
 /**
  * @brief Inicia o funcionário que fica na catraca.
