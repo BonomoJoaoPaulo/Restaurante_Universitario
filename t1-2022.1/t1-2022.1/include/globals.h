@@ -67,6 +67,12 @@ extern void globals_set_buffets(buffet_t *buffets_ref);
  */
 extern buffet_t *globals_get_buffets();
 
+/**
+* @brief Insere o número de mesas (de modo global)
+* 
+* @param tables
+*/
+
 extern void globals_set_number_of_tables(int tables);
 
 /**
@@ -78,13 +84,14 @@ extern void globals_set_number_of_tables(int tables);
 extern int globals_get_number_of_tables();
 
 /**
- * @brief Insere o número de assentos por mesa (de modo global)
+ * @brief Insere o número de bancos em cada mesa (de modo global)
  * 
+ * @param seats
  */
 extern void globals_set_seats_per_table(int seats);
 
 /**
- * @brief Retorna o número de assentos por mesa (de modo global)
+ * @brief Retorna o número de bancos em cada mesa (de modo global)
  * 
  * @return int 
  */
