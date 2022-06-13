@@ -28,9 +28,9 @@ table_t *globals_get_table()
     return table;
 }
 
-void globals_set_number_of_tables(int num_tables)
+void globals_set_number_of_tables(int tables)
 {
-    number_of_tables = num_tables;
+    number_of_tables = tables;
 }
 
 int globals_get_number_of_tables()
