@@ -10,7 +10,7 @@ typedef struct buffet
 {
     int _id;
     int _meal[5];
-
+    //
     int queue_left[5];
     int queue_right[5];
     
