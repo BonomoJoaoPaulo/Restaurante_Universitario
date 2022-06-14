@@ -21,21 +21,21 @@ void *chef_run()
 
 
 void chef_put_food(buffet_t *buffets, int i, int j)
-/* Inicia a bacia com 40 porcoes */
-{
+/* Inicia a bacia com 40 porções */
+{   
     buffets[i]._meal[j] = 40;
 }
 
 void chef_check_food(buffet_t *buffets)
-/* Se a bacia estiver zerada de porcoes, a funcao chef_put_food eh chamada */
-/* line eh o buffet e col eh a bacia daquele buffet que estah sendo verificada */
+/* Se a bacia estiver zerada de porções, a funcao chef_put_food é chamada */
+/* a variável line é o buffet e col é a bacia daquele buffet que está sendo verificada */
 {
-    for (int line = 0; line < config.buffets; ++line)
-        for (int col = 0; col < 5; ++col){
+    int total_buffets = globals_get_number_of_buffets()
+    for (int line = 0; line < total_buffets; line++)
+        for (int col = 0; col < 5; col++)
+        {
             if(buffets[line]._meal[col] == 0) {
-                sem_wait(&sem_meal[col])
                 chef_put_food(&buffets, line, col);
-                sem_post(&sem_meal[col])
             }
         }
 }
