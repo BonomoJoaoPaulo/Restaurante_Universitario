@@ -1,0 +1,3 @@
+
+criar um semafaro para cada posicao, 
+ou fazer com mutex dar lock na proxima posicao antes de ir pra posicao e dar unlock na posicao atual  

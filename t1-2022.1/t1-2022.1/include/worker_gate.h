@@ -2,6 +2,7 @@
 #define __WORKER_GATE_H__
 
 #include <pthread.h>
+#include <semaphore.h>
 #include "student.h"
 
 typedef struct worker_gate

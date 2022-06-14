@@ -6,6 +6,7 @@ table_t *table = NULL;
 buffet_t *buffets_ref = NULL;
 
 int students_number = 0;
+int number_of_buffets = 0;
 
 void globals_set_queue(queue_t *queue)
 {
@@ -47,6 +48,17 @@ buffet_t *globals_get_buffets()
 {
     return buffets_ref;
 }
+
+void globals_set_number_of_buffets(int number)
+{
+    number_of_buffets = number;
+}
+
+int globals_get_number_of_buffets()
+{
+    return number_of_buffets;
+}
+
 
 
 /**

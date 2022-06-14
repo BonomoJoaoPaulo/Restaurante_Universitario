@@ -67,4 +67,18 @@ extern void globals_set_buffets(buffet_t *buffets_ref);
  */
 extern buffet_t *globals_get_buffets();
 
+/**
+ * @brief Seta o numero de buffets
+ * 
+ * @return int  
+ */
+extern void globals_set_number_of_buffets(int number);
+
+/**
+ * @brief Retorna o numero de buffets
+ * 
+ * @return buffet_t* 
+ */
+extern int globals_get_number_of_buffets();
+
 #endif
