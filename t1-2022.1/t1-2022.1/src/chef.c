@@ -6,10 +6,10 @@
 
 void *chef_run()
 {
-    /* Insira sua lógica aqui */
     queue_t *students_queue = globals_get_queue();
     buffet_t *buffets = globals_get_buffets();
 
+/* Enquanto tiver estudantes na fila, o chef vai checkar as bacias de comida */
     while (students_queue->_length != 0)
     {
         chef_check_food(&buffets);
@@ -20,10 +20,14 @@ void *chef_run()
 
 
 void chef_put_food(buffet_t *buffets, int i, int j)
+/* Inicia a bacia com 40 porcoes */
 {
     buffets[i]._meal[j] = 40;
 }
+
 void chef_check_food(buffet_t *buffets)
+/* Se a bacia estiver zerada de porcoes, a funcao chef_put_food eh chamada */
+/* line eh o buffet e col eh a bacia daquele buffet que estah sendo verificada */
 {
     for (int line = 0; line < config.buffets; ++line)
         for (int col = 0; col < 5; ++col){
