@@ -32,6 +32,7 @@ void buffet_init(buffet_t *self, int number_of_buffets)
         /* Inicia com 40 unidades de comida em cada bacia */
         for(j = 0; j < 5; j++)
             self[i]._meal[j] = 40;
+            sem_init(&sem_meal[j], 0, 2)
 
         for(j= 0; j< 5; j++){
              /* A fila esquerda do buffet possui cinco posições. */

@@ -3,6 +3,7 @@
 #include "chef.h"
 #include "config.h"
 #include "globals.h"
+#include "buffet.h"
 
 void *chef_run()
 {
@@ -32,7 +33,9 @@ void chef_check_food(buffet_t *buffets)
     for (int line = 0; line < config.buffets; ++line)
         for (int col = 0; col < 5; ++col){
             if(buffets[line]._meal[col] == 0) {
+                sem_wait(&sem_meal[col])
                 chef_put_food(&buffets, line, col);
+                sem_post(&sem_meal[col])
             }
         }
 }

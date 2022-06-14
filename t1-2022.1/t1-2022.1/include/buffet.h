@@ -2,7 +2,7 @@
 #define __buffet_H__
 
 #include <pthread.h>
-
+#include <semaphore.h>
 #include "queue.h"
 
 
@@ -14,6 +14,8 @@ typedef struct buffet
     int queue_left[5];
     int queue_right[5];
     
+    sem_t sem_meal[5];
+
     pthread_t thread; /* Thread do buffet   */
 } buffet_t;
 
