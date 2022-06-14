@@ -1,25 +1,29 @@
 #include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 #include "worker_gate.h"
 #include "globals.h"
 #include "config.h"
 
 
-
 void worker_gate_look_queue()
-{
-    /* Insira aqui sua lógica */
+{   
+ //nao esta sendo usado
 }
 
 void worker_gate_remove_student()
-{
-    /* Insira aqui sua lógica */
+{   
+    queue_t students_queue = *globals_get_queue();
+    student_t *removed_student; 
+    removed_student = queue_remove(&students_queue);
+    //tira o estudante da fila para que ele seja designado para algum buffet
+
 }
 
 void worker_gate_look_buffet()
 {
-    /* Insira aqui sua lógica */
-
+ //nao esta sendo usado
 }
 
 void *worker_gate_run(void *arg)
@@ -30,10 +34,21 @@ void *worker_gate_run(void *arg)
     number_students = *((int *)arg);
     all_students_entered = number_students > 0 ? FALSE : TRUE;
 
+    buffet_t *buffets = globals_get_buffets();
+    int array_buffets_length = sizeof(buffets)/ sizeof(buffets[0]);
+    int number_of_first_positions_on_buffets = array_buffets_length * 2;
+
+    sem_t ratchet;// semafaro catraca para o worker gate so procurar posicoes livres nas filas do buffet quando elas existirem(evita espera ocupada)
+    sem_init(&ratchet, 0, number_of_first_positions_on_buffets);// inicializando ele com numero de buffets x 2 porque tem 2 filas 
+
     while (all_students_entered == FALSE)
     {
-        worker_gate_look_queue();
-        worker_gate_look_buffet();
+        number_students --;
+        if (number_students = 0) {
+            all_students_entered == TRUE;
+            sem_destroy(&ratchet);
+        }
+        //worker_gate_look_buffet();
         worker_gate_remove_student();
         msleep(5000); /* Pode retirar este sleep quando implementar a solução! */
     }
@@ -55,5 +70,17 @@ void worker_gate_finalize(worker_gate_t *self)
 
 void worker_gate_insert_queue_buffet(student_t *student)
 {
-    /* Insira aqui sua lógica */
+    buffet_t *buffets = globals_get_buffets();
+    int array_buffets_length = sizeof(buffets)/ sizeof(buffets[0]);
+    sem_wait(&ratchet);// semafaro que evita espera ocupada
+    for (int i = 0; i < array_buffets_length; i++){
+        if (buffets[i].queue_left[0] == 0){
+            student->_id_buffet = buffets[i]._id;
+            student->left_or_right = 'L';
+        }
+        if (buffets[i].queue_right[0] == 0){
+            student->_id_buffet = buffets[i]._id;
+            student->left_or_right = 'R';
+        }
+    }
 }

@@ -2,26 +2,35 @@
 
 #include "chef.h"
 #include "config.h"
+#include "globals.h"
 
 void *chef_run()
 {
     /* Insira sua lógica aqui */
-    while (TRUE)
+    queue_t *students_queue = globals_get_queue();
+    buffet_t *buffets = globals_get_buffets();
+
+    while (students_queue->_length != 0)
     {
-        msleep(5000); /* Pode retirar este sleep quando implementar a solução! */
+        chef_check_food(&buffets);
     }
     
     pthread_exit(NULL);
 }
 
 
-void chef_put_food()
+void chef_put_food(buffet_t *buffets, int i, int j)
 {
-    /* Insira sua lógica aqui */
+    buffets[i]._meal[j] = 40;
 }
-void chef_check_food()
+void chef_check_food(buffet_t *buffets)
 {
-    /* Insira sua lógica aqui */
+    for (int line = 0; line < config.buffets; ++line)
+        for (int col = 0; col < 5; ++col){
+            if(buffets[line]._meal[col] == 0) {
+                chef_put_food(&buffets, line, col);
+            }
+        }
 }
 
 /* --------------------------------------------------------- */

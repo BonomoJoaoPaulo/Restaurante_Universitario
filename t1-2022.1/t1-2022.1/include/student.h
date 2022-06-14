@@ -55,7 +55,7 @@ extern void student_seat (student_t *self, table_t *table);
 /**
 * @brief Função que faz com que o estudante se sirva em algum buffet
 * 
-* @param self 
+* @param self
 */
 extern void student_serve (student_t *self);
 

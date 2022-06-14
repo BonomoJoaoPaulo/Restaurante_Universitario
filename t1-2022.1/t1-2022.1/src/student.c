@@ -24,13 +24,18 @@ void* student_run(void *arg)
 };
 
 void student_seat(student_t *self, table_t *table)
-{
-    /* Insira sua lógica aqui */
+{   
+
+
 }
 
 void student_serve(student_t *self)
 {
-    /* Insira sua lógica aqui */
+        buffet_t *buffets = globals_get_buffets();
+        if (self->_wishes[self->_buffet_position]){
+            //proteger com mutex
+            buffets[self->_id_buffet]._meal[self->_buffet_position]--;
+        }
 }
 
 void student_leave(student_t *self, table_t *table)
