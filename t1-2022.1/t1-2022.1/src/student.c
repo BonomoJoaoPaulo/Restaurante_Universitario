@@ -25,7 +25,18 @@ void* student_run(void *arg)
 
 void student_seat(student_t *self, table_t *table)
 {   
-    /*Insira sua logica aqui*/
+    table_t *tables = globals_get_table();
+    int num_tables = globals_get_number_of_tables();
+    
+    /* Procura e pega um lugar disponível nas mesas */
+    for (int i = 0; i < num_tables; i++) {
+        if (tables[i]._empty_seats > 0) {
+            /* Registra o id da table que o estudante sentou */
+            self->_id_table = i;
+            tables[i]._empty_seats--;
+            break;
+        }
+    }
 }
 
 void student_serve(student_t *self)
