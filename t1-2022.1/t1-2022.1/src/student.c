@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <pthread.h>
 
 #include "student.h"
 #include "config.h"
@@ -10,10 +11,14 @@
 #include "globals.h"
 #include "table.h"
 
+pthread_mutex_t student_serve_mutex;
+
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
     table_t *tables  = globals_get_table();
+
+    pthread_mutex_init(&student_serve_mutex, NULL);
 
     worker_gate_insert_queue_buffet(self);
     student_serve(self);
@@ -21,6 +26,7 @@ void* student_run(void *arg)
     student_leave(self, tables);
 
     pthread_exit(NULL);
+    pthread_mutex_destroy(&student_serve_mutex);
 };
 
 void student_seat(student_t *self, table_t *table)
@@ -46,8 +52,9 @@ void student_serve(student_t *self)
 
     while (self->_buffet_position != -1){
         if (self->_wishes[self->_buffet_position] == 1){
-            //proteger com mutex
+            pthread_mutex_lock(&student_serve_mutex);
             buffets[self->_id_buffet]._meal[self->_buffet_position]--;
+            pthread_mutex_unlock(&student_serve_mutex);
         }
     buffet_next_step(buffet_student_is_on,self);
     }

@@ -41,7 +41,11 @@ void *worker_gate_run(void *arg)
     //inicializar o mutex do worker gate init queue
 
     sem_t ratchet;// semafaro catraca para o worker gate so procurar posicoes livres nas filas do buffet quando elas existirem(evita espera ocupada)
-    sem_init(&ratchet, 0, number_of_buffets*2);// inicializando ele com numero de buffets x 2 porque tem 2 filas 
+    sem_init(&ratchet, 0, number_of_buffets*2);// inicializando ele com numero de buffets x 2 porque tem 2 filas
+    int sval2;    
+    sem_getvalue(&ratchet, &sval2);
+    printf("Semaphore value: %d\n", sval2); 
+
 
     while (all_students_entered == FALSE)
     {
@@ -83,16 +87,15 @@ void worker_gate_insert_queue_buffet(student_t *student)
         if (buffets[i].queue_left[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'L';
-            printf("chamou insert");
             buffet_queue_insert(buffets,student);
             break;
-        }else {
+        }if (buffets[i].queue_right[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'R';
-            printf("chamou insert");
             buffet_queue_insert(buffets,student);
             break;
         }
-       pthread_mutex_unlock(&buffet_first_position_mutex); 
     }
+    printf("libera mutex");
+    pthread_mutex_unlock(&buffet_first_position_mutex);
 }

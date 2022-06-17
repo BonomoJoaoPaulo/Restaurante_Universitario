@@ -108,7 +108,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
             self->queue_left[position + 1] = student->_id;
             student->_buffet_position ++;
             /* Unlock no mutex da posição (bacia) ATUAL do estudante */
-            pthread_mutex_lock(&self->mutex_queue_left[position]);
+            pthread_mutex_unlock(&self->mutex_queue_left[position]);
         } else /* Está na fila direita? */
         {   /* Caminha para a posição seguinte da fila do buffet.*/
             int position = student->_buffet_position;
@@ -120,7 +120,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
             self->queue_left[position + 1] = student->_id;
             student->_buffet_position ++;
             /* Unlock no mutex da posição (bacia) ATUAL do estudante */
-            pthread_mutex_lock(&self->mutex_queue_right[position]);
+            pthread_mutex_unlock(&self->mutex_queue_right[position]);
         }
     } else /* Caso o estudante esteja na última bacia */
     {
