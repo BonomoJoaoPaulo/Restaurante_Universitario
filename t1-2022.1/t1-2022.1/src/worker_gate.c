@@ -6,6 +6,8 @@
 #include "globals.h"
 #include "config.h"
 
+pthread_mutex_t buffet_first_position_mutex;
+
 
 void worker_gate_look_queue()
 {   
@@ -33,6 +35,8 @@ void *worker_gate_run(void *arg)
     number_students = *((int *)arg);
     all_students_entered = number_students > 0 ? FALSE : TRUE;
 
+    pthread_mutex_init(&buffet_first_position_mutex, NULL);
+
     int number_of_buffets = globals_get_number_of_buffets();
     //inicializar o mutex do worker gate init queue
 
@@ -47,7 +51,7 @@ void *worker_gate_run(void *arg)
         msleep(5000); /* Pode retirar este sleep quando implementar a solução! */
     }
 
-    //destruir mutex aqui
+    pthread_mutex_destroy(&buffet_first_position_mutex);
     pthread_exit(NULL);
     
 }
@@ -71,22 +75,24 @@ void worker_gate_insert_queue_buffet(student_t *student)
     buffet_t *buffets = globals_get_buffets();
     int number_of_buffets = globals_get_number_of_buffets();
     int sval2;
-    msleep(5000);
     sem_getvalue(&ratchet, &sval2);
     printf("Semaphore value: %d\n", sval2);
     //sem_wait(&ratchet);// semafaro que evita espera ocupada  
     for (int i = 0; i < number_of_buffets; i++){
+        pthread_mutex_lock(&buffet_first_position_mutex);
         if (buffets[i].queue_left[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'L';
             printf("chamou insert");
             buffet_queue_insert(buffets,student);
-        }
-        if (buffets[i].queue_right[0] == 0){
+            break;
+        }else {
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'R';
             printf("chamou insert");
             buffet_queue_insert(buffets,student);
+            break;
         }
+       pthread_mutex_unlock(&buffet_first_position_mutex); 
     }
 }
