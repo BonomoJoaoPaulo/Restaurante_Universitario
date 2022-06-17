@@ -30,12 +30,12 @@ void chef_check_food(buffet_t *buffets)
 /* Se a bacia estiver zerada de porções, a funcao chef_put_food é chamada */
 /* a variável line é o buffet e col é a bacia daquele buffet que está sendo verificada */
 {
-    int total_buffets = globals_get_number_of_buffets()
+    int total_buffets = globals_get_number_of_buffets();
     for (int line = 0; line < total_buffets; line++)
         for (int col = 0; col < 5; col++)
         {
             if(buffets[line]._meal[col] == 0) {
-                chef_put_food(&buffets, line, col);
+                chef_put_food(buffets, line, col);
             }
         }
 }

@@ -3,6 +3,9 @@
 #include "config.h"
 #include "worker_gate.h"
 #include "chef.h"
+#include "globals.h"
+
+sem_t ratchet;
 
 void *buffet_run(void *arg)
 {   
@@ -54,7 +57,7 @@ void buffet_init(buffet_t *self, int number_of_buffets)
 }
 
 
-void buffet_queue_insert(buffet_t *self, student_t *student)
+int buffet_queue_insert(buffet_t *self, student_t *student)
 {
     /* Se o estudante vai para a fila esquerda */
     if (student->left_or_right == 'L') 
@@ -66,6 +69,7 @@ void buffet_queue_insert(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self[student->_id_buffet].mutex_queue_left[0]);
             self[student->_id_buffet].queue_left[0] = student->_id;
             student->_buffet_position = 0;
+            return 1;
         }
     }
     /* Se o estudante vai para a fila direita */
@@ -78,8 +82,10 @@ void buffet_queue_insert(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self[student->_id_buffet].mutex_queue_right[0]);
             self[student->_id_buffet].queue_right[0] = student->_id;
             student->_buffet_position = 0;
+            return 1;
         }
     }
+    return 0;
 }
 
 
@@ -92,37 +98,37 @@ void buffet_next_step(buffet_t *self, student_t *student)
         {   /* Caminha para a posição seguinte da fila do buffet.*/
             int position = student->_buffet_position;
             /* Lock no mutex da próxima posição (bacia) da fila do buffet*/
-            pthread_mutex_lock(&buffet_student->mutex_queue_left[position + 1]);
+            pthread_mutex_lock(&self->mutex_queue_left[position + 1]);
             self[student->_id_buffet].queue_left[position] = 0;
             /* Sempre que a primeira posição da fila de qualquer buffet fica vaga damos um post(incremento) no semafaro da catraca */
             sem_post(&ratchet);
             self[student->_id_buffet].queue_left[position + 1] = student->_id;
             student->_buffet_position ++;
             /* Unlock no mutex da posição (bacia) ATUAL do estudante */
-            pthread_mutex_lock(&buffet_student->mutex_queue_left[position]);
+            pthread_mutex_lock(&self->mutex_queue_left[position]);
         } else /* Está na fila direita? */
         {   /* Caminha para a posição seguinte da fila do buffet.*/
             int position = student->_buffet_position;
             /* Lock no mutex da próxima posição (bacia) da fila do buffet*/
-            pthread_mutex_lock(&buffet_student->mutex_queue_right[position + 1]);
+            pthread_mutex_lock(&self->mutex_queue_right[position + 1]);
             self[student->_id_buffet].queue_left[position] = 0;
             /* Sempre que a primeira posição da fila de qualquer buffet fica vaga damos um post(incremento) no semafaro da catraca */
             sem_post(&ratchet);
             self[student->_id_buffet].queue_left[position + 1] = student->_id;
             student->_buffet_position ++;
             /* Unlock no mutex da posição (bacia) ATUAL do estudante */
-            pthread_mutex_lock(&buffet_student->mutex_queue_right[position]);
+            pthread_mutex_lock(&self->mutex_queue_right[position]);
         }
     } else /* Caso o estudante esteja na última bacia */
     {
         if (student->left_or_right == 'L') {
             /* Unlock no mutex da bacia que o estudante está (a última) */
-            buffet_student->queue_left[4] = 0;
-            pthread_mutex_unlock(&buffet_student->mutex_queue_left[4]);
+            self->queue_left[4] = 0;
+            pthread_mutex_unlock(&self->mutex_queue_left[4]);
         } else {
             /* Unlock no mutex da bacia que o estudante está (a última) */
-            buffet_student->queue_right[4] = 0;
-            pthread_mutex_unlock(&buffet_student->mutex_queue_right[4]);
+            self->queue_right[4] = 0;
+            pthread_mutex_unlock(&self->mutex_queue_right[4]);
         }
 
         /* Define a posição do estudante no buffet como -1 (fora) */

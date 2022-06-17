@@ -25,8 +25,7 @@ void* student_run(void *arg)
 
 void student_seat(student_t *self, table_t *table)
 {   
-
-
+    /*Insira sua logica aqui*/
 }
 
 void student_serve(student_t *self)

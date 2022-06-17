@@ -6,6 +6,21 @@
 #include "buffet.h"
 
 /**
+ * @brief retorna o numero de buffets
+ * 
+ * @return int 
+ */
+extern int globals_get_number_of_buffets();
+
+/**
+ * @brief seta o numero de buffets em uma variavel global
+ * 
+ * @param number_of_buffets 
+ */
+
+extern void globals_set_number_of_buffets(int number_of_buffets);
+
+/**
  * @brief Inicia uma fila (de modo global)
  * 
  * @param queue 

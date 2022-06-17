@@ -2,6 +2,7 @@
 #define __WORKER_GATE_H__
 
 #include <pthread.h>
+#include <semaphore.h>
 #include "student.h"
 
 typedef struct worker_gate
@@ -11,10 +12,6 @@ typedef struct worker_gate
 
 } worker_gate_t;
 
-/**
- * @brief semafaro para evitar a espera ocupada de procurar se o a primeira posicao do buffet esta livre
- * 
- */
 extern sem_t ratchet;
 
 /**
