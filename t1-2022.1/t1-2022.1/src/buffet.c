@@ -58,7 +58,7 @@ void buffet_init(buffet_t *self, int number_of_buffets)
 }
 
 
-int buffet_queue_insert(buffet_t *self, student_t *student)
+void buffet_queue_insert(buffet_t *self, student_t *student)
 {
     /* Se o estudante vai para a fila esquerda */
     if (student->left_or_right == 'L') 
@@ -71,7 +71,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             self[student->_id_buffet].queue_left[0] = student->_id;
             student->_buffet_position = 0;
             printf("inseriu no buffet");
-            return 1;
+            pthread_mutex_unlock(&self[student->_id_buffet].mutex_queue_left[0]);
         }
     }
     /* Se o estudante vai para a fila direita */
@@ -85,10 +85,9 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             self[student->_id_buffet].queue_right[0] = student->_id;
             student->_buffet_position = 0;
             printf("inseriu no buffet");
-            return 1;
+            pthread_mutex_unlock(&self[student->_id_buffet].mutex_queue_right[0]);
         }
     }
-    return 0;
 }
 
 
