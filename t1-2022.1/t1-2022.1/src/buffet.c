@@ -69,6 +69,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self[student->_id_buffet].mutex_queue_left[0]);
             self[student->_id_buffet].queue_left[0] = student->_id;
             student->_buffet_position = 0;
+            printf("estudante inserido")
             return 1;
         }
     }
@@ -82,6 +83,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self[student->_id_buffet].mutex_queue_right[0]);
             self[student->_id_buffet].queue_right[0] = student->_id;
             student->_buffet_position = 0;
+             printf("estudante inserido")
             return 1;
         }
     }

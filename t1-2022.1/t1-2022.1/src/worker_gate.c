@@ -34,6 +34,7 @@ void *worker_gate_run(void *arg)
     all_students_entered = number_students > 0 ? FALSE : TRUE;
 
     int number_of_buffets = globals_get_number_of_buffets();
+    //inicializar o mutex do worker gate init queue
 
     sem_t ratchet;// semafaro catraca para o worker gate so procurar posicoes livres nas filas do buffet quando elas existirem(evita espera ocupada)
     sem_init(&ratchet, 0, number_of_buffets*2);// inicializando ele com numero de buffets x 2 porque tem 2 filas 
@@ -46,6 +47,7 @@ void *worker_gate_run(void *arg)
         msleep(5000); /* Pode retirar este sleep quando implementar a solução! */
     }
 
+    //destruir mutex aqui
     pthread_exit(NULL);
     
 }
@@ -68,6 +70,7 @@ void worker_gate_insert_queue_buffet(student_t *student)
     buffet_t *buffets = globals_get_buffets();
     int number_of_buffets = globals_get_number_of_buffets();
     sem_wait(&ratchet);// semafaro que evita espera ocupada
+    //proteger com mutex 
     for (int i = 0; i < number_of_buffets; i++){
         if (buffets[i].queue_left[0] == 0){
             student->_id_buffet = buffets[i]._id;
