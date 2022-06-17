@@ -30,11 +30,16 @@ void student_seat(student_t *self, table_t *table)
 
 void student_serve(student_t *self)
 {
-        buffet_t *buffets = globals_get_buffets();
-        if (self->_wishes[self->_buffet_position]){
+    buffet_t *buffets = globals_get_buffets();
+    buffet_t *buffet_student_is_on = buffets + self->_id_buffet;
+
+    while (self->_buffet_position != -1){
+        if (self->_wishes[self->_buffet_position] == 1){
             //proteger com mutex
             buffets[self->_id_buffet]._meal[self->_buffet_position]--;
         }
+    buffet_next_step(buffet_student_is_on,self);
+    }
 }
 
 void student_leave(student_t *self, table_t *table)
