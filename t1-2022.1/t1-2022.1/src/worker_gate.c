@@ -65,18 +65,25 @@ void worker_gate_finalize(worker_gate_t *self)
 
 void worker_gate_insert_queue_buffet(student_t *student)
 {
+    //printf("chamou a funcao");
     buffet_t *buffets = globals_get_buffets();
     int number_of_buffets = globals_get_number_of_buffets();
-    sem_wait(&ratchet);// semafaro que evita espera ocupada
+    int sval2;
+    msleep(5000);
+    sem_getvalue(&ratchet, &sval2);
+    printf("Semaphore value: %d\n", sval2);
+    //sem_wait(&ratchet);// semafaro que evita espera ocupada  
     for (int i = 0; i < number_of_buffets; i++){
         if (buffets[i].queue_left[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'L';
+            printf("chamou insert");
             buffet_queue_insert(buffets,student);
         }
         if (buffets[i].queue_right[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'R';
+            printf("chamou insert");
             buffet_queue_insert(buffets,student);
         }
     }

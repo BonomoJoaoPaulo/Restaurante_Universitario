@@ -11,6 +11,7 @@ void *buffet_run(void *arg)
 {   
     int all_students_entered = FALSE;
     buffet_t *self = (buffet_t*) arg;
+
     
     /*  O buffet funciona enquanto houver alunos na fila externa. */
     while (all_students_entered == FALSE)
@@ -69,6 +70,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self[student->_id_buffet].mutex_queue_left[0]);
             self[student->_id_buffet].queue_left[0] = student->_id;
             student->_buffet_position = 0;
+            printf("inseriu no buffet");
             return 1;
         }
     }
@@ -82,6 +84,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self[student->_id_buffet].mutex_queue_right[0]);
             self[student->_id_buffet].queue_right[0] = student->_id;
             student->_buffet_position = 0;
+            printf("inseriu no buffet");
             return 1;
         }
     }
@@ -92,7 +95,7 @@ int buffet_queue_insert(buffet_t *self, student_t *student)
 void buffet_next_step(buffet_t *self, student_t *student)
 {
     /* Se estudante ainda precisa se servir de mais alguma coisa... */
-    if (student->_buffet_position <= 4)
+    if (student->_buffet_position < 4)
     { 
         if (student->left_or_right == 'L') /* Está na fila esquerda? */
         {   /* Caminha para a posição seguinte da fila do buffet.*/
