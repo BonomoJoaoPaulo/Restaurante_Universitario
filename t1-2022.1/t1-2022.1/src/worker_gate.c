@@ -42,10 +42,10 @@ void *worker_gate_run(void *arg)
     //inicializar o mutex do worker gate init queue
 
    
-    sem_init(&ratchet, 0, number_of_buffets*4);// inicializando ele com numero de buffets x 2 porque tem 2 filas
+    sem_init(&ratchet, 0, number_of_buffets*2);// inicializando ele com numero de buffets x 2 porque tem 2 filas
     int sval2;    
     sem_getvalue(&ratchet, &sval2);
-    printf("Semaphore value: %d\n", sval2); 
+    //printf("Semaphore value: %d\n", sval2); 
 
 
     while (all_students_entered == FALSE)
@@ -81,23 +81,23 @@ void worker_gate_insert_queue_buffet(student_t *student)
     int number_of_buffets = globals_get_number_of_buffets();
     int sval2;
     sem_getvalue(&ratchet, &sval2);
-    printf("Semaphore value: %d\n", sval2);
+    //printf("Semaphore value: %d\n", sval2);
     sem_wait(&ratchet);// semafaro que evita espera ocupada  
     for (int i = 0; i < number_of_buffets; i++){
-        pthread_mutex_lock(&buffet_first_position_mutex);
+        //pthread_mutex_lock(&buffet_first_position_mutex);
         if (buffets[i].queue_left[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'L';
-            printf("student %d para %d lour %c", student->_id, student->_id_buffet, student->left_or_right);
+            //printf("student %d para %d lour %c", student->_id, student->_id_buffet, student->left_or_right);
             buffet_queue_insert(buffets,student);
             break;
         }if (buffets[i].queue_right[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'R';
-            printf("student %d para %d lour %c", student->_id, student->_id_buffet, student->left_or_right);
+            //printf("student %d para %d lour %c", student->_id, student->_id_buffet, student->left_or_right);
             buffet_queue_insert(buffets,student);
             break;
         }
     }
-    pthread_mutex_unlock(&buffet_first_position_mutex);
+    //pthread_mutex_unlock(&buffet_first_position_mutex);
 }
