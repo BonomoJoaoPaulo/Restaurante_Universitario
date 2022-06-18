@@ -41,7 +41,14 @@ void student_seat(student_t *self, table_t *table)
     for (int table = 0; table < num_tables; table++)
     {   
         if (tables[table]._empty_seats > 0)
-        {
+        {   
+            for (int i; i < tables[table]._max_seats; i++)
+            {
+                if (tables[table]._students_sitting[i] == 0)
+                {
+                    tables[table]._students_sitting[i] = self->_id;
+                }
+            }
             tables[table]._empty_seats--;
             printf("%d sentou na mesa %d", self->_id, table);
             break;
@@ -66,8 +73,24 @@ void student_serve(student_t *self)
 }
 
 void student_leave(student_t *self, table_t *table)
-{
-    /* Insira sua lógica aqui */
+{   
+    printf("student %d saiu\n", self->_id);
+    int num_tables = globals_get_number_of_tables();
+    int num_chairs = globals_get_seats_per_table();
+    printf("numero de mesas: %d\n", num_tables);
+    for (int t = 0; t < num_tables; t++)
+    {   
+        for (int i = 0; i < num_chairs; i++)
+        {   
+            if (table[t]._students_sitting[i] == self->_id)
+            {   
+                printf("espaco liberado na mesa %d", t);
+                table[t]._students_sitting[i] = 0;
+                table[t]._empty_seats++;
+                break;
+            }
+        }
+    }
 }
 
 /* --------------------------------------------------------- */
