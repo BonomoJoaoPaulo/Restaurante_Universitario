@@ -17,13 +17,18 @@ void *buffet_run(void *arg)
     /*  O buffet funciona enquanto houver alunos na fila externa. */
     while (all_students_entered == FALSE)
     {
-        /* Cada buffet possui: Arroz, Feijão, Acompanhamento, Proteína e Salada */
-        /* Máximo de porções por bacia (40 unidades). */
+        if (globals_get_students() == 0) 
+        {
+            break;
+        }
         _log_buffet(self);
-
-        msleep(500); /* Pode retirar este sleep quando implementar a solução! */
+        msleep(100);
     }
 
+    for(int i = 0; i < 5; i++){
+        pthread_mutex_destroy(&self->mutex_queue_left[i]);
+        pthread_mutex_destroy(&self->mutex_queue_right[i]);
+    }
     pthread_exit(NULL);
 }
 
@@ -105,6 +110,9 @@ void buffet_next_step(buffet_t *self, student_t *student)
             pthread_mutex_lock(&self->mutex_queue_left[position + 1]);
             self->queue_left[position] = 0;
             self->queue_left[position + 1] = student->_id;
+            if (student->_buffet_position == 3){
+                printf("student %d no %d pos %d \n", student->_id, student->_id_buffet, student->_buffet_position);
+            }
             if (student->_buffet_position == 0){
                 /* Sempre que a primeira posição da fila de qualquer buffet fica vaga damos um post(incremento) no semafaro da catraca */
                 //printf("student %d", student->_id);
@@ -148,7 +156,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
         student->_buffet_position = -1;
         printf("student %d saiu: %d \n", student->_id, student->_buffet_position);
         cont++;
-        printf("%d", cont);
+        //printf("%d", cont);
     }
 }
 
