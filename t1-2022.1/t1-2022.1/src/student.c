@@ -20,7 +20,9 @@ void* student_run(void *arg)
 
     pthread_mutex_init(&student_serve_mutex, NULL);
 
+    msleep(1000);
     worker_gate_insert_queue_buffet(self);
+    msleep(1000);
     student_serve(self);
     student_seat(self, tables);
     student_leave(self, tables);
@@ -53,6 +55,7 @@ void student_serve(student_t *self)
     while (self->_buffet_position != -1){
         if (self->_wishes[self->_buffet_position] == 1){
             pthread_mutex_lock(&student_serve_mutex);
+            printf("student %d ate? %d \n", self->_id, self->_wishes[self->_buffet_position]);
             buffets[self->_id_buffet]._meal[self->_buffet_position]--;
             pthread_mutex_unlock(&student_serve_mutex);
         }
