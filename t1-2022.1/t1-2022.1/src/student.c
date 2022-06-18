@@ -12,13 +12,19 @@
 #include "table.h"
 
 pthread_mutex_t student_serve_mutex;
+pthread_mutex_t student_seat_mutex;
+sem_t places_to_seat;
 
 void* student_run(void *arg)
 {
     student_t *self = (student_t*) arg;
     table_t *tables  = globals_get_table();
+    int seats_per_table = globals_get_seats_per_table();
+    int number_of_tables = globals_get_number_of_tables();
 
     pthread_mutex_init(&student_serve_mutex, NULL);
+    pthread_mutex_init(&student_seat_mutex, NULL);
+    sem_init(&places_to_seat, 0, number_of_tables*seats_per_table);
 
     msleep(1000);
     worker_gate_insert_queue_buffet(self);
@@ -29,38 +35,36 @@ void* student_run(void *arg)
 
     pthread_exit(NULL);
     pthread_mutex_destroy(&student_serve_mutex);
+    pthread_mutex_destroy(&student_seat_mutex);
 };
 
 void student_seat(student_t *self, table_t *table)
 {   
     table_t *tables = globals_get_table();
     int num_tables = globals_get_number_of_tables();
-    printf("student %d procurou lugar\n", self->_id);
-    
-    /* Procura e pega um lugar disponível nas mesas */
-    for (int table = 0; table < num_tables; table++)
-    {   
-        if (tables[table]._empty_seats > 0)
-        {   
-            for (int i; i < tables[table]._max_seats; i++)
-            {
-                if (tables[table]._students_sitting[i] == 0)
-                {
-                    tables[table]._students_sitting[i] = self->_id;
-                }
-            }
-            tables[table]._empty_seats--;
-            printf("%d sentou na mesa %d", self->_id, table);
+
+    sem_wait(&places_to_seat);
+    pthread_mutex_lock(&student_seat_mutex);
+    for (int i = 0; i < num_tables; i++)
+    {
+        if(tables[i]._empty_seats != 0)
+        {
+            tables[i]._empty_seats --;
+            self->_id_table_seating = tables[i]._id;
+            pthread_mutex_unlock(&student_seat_mutex);
+            printf("%d espacos livres na mesa %d\n", tables[i]._empty_seats, tables[i]._id);
             break;
         }
     }
+    
 }
 
 void student_serve(student_t *self)
 {
     buffet_t *buffets = globals_get_buffets();
 
-    while (self->_buffet_position != -1){
+    while (self->_buffet_position != -1)
+    {
         if (self->_wishes[self->_buffet_position] == 1)
         {
             pthread_mutex_lock(&student_serve_mutex);
@@ -74,23 +78,13 @@ void student_serve(student_t *self)
 
 void student_leave(student_t *self, table_t *table)
 {   
-    printf("student %d saiu\n", self->_id);
-    int num_tables = globals_get_number_of_tables();
-    int num_chairs = globals_get_seats_per_table();
-    printf("numero de mesas: %d\n", num_tables);
-    for (int t = 0; t < num_tables; t++)
-    {   
-        for (int i = 0; i < num_chairs; i++)
-        {   
-            if (table[t]._students_sitting[i] == self->_id)
-            {   
-                printf("espaco liberado na mesa %d", t);
-                table[t]._students_sitting[i] = 0;
-                table[t]._empty_seats++;
-                break;
-            }
-        }
-    }
+    /* t recebe o id da mesa que o student esta sentado */
+    msleep(5000);
+    int t = self->_id_table_seating;
+    table[t]._empty_seats++;
+    sem_post(&places_to_seat);
+    printf("student %d liberou na mesa %d\n", self->_id, t);
+            
 }
 
 /* --------------------------------------------------------- */

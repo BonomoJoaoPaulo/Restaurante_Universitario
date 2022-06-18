@@ -155,7 +155,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
         student->_buffet_position = -1;
         printf("student %d saiu: %d \n", student->_id, student->_buffet_position);
         cont++;
-        printf("%d", cont);
+        //printf("%d", cont);
     }
 }
 

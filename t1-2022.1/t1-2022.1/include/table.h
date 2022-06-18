@@ -6,7 +6,6 @@ typedef struct table_t
         int _id;                                /* ID da mesa */
         int _empty_seats;                      /* Quantidade de lugares vazios */
         int _max_seats;                       /* Capacidade máxima de cada mesa*/
-        int _students_sitting[5];     /* Array para guardar o id dos estudantes sentados naquela mesa */
 } table_t; 
 
 /**

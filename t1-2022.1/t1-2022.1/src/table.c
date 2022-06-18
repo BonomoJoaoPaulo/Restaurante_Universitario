@@ -17,10 +17,6 @@ table_t *table_init(int number_of_tables, int seats_per_table)
         new_tables[i]._id = i;
         new_tables[i]._empty_seats = seats_per_table;
         new_tables[i]._max_seats = seats_per_table;
-        for (int j = 0; j < seats_per_table; j++)
-        {
-            new_tables[i]._students_sitting[j] = 0;
-        }
     }
 
     return new_tables;

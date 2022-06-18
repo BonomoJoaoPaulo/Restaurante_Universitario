@@ -96,6 +96,7 @@ void worker_gate_insert_queue_buffet(student_t *student)
             buffet_queue_insert(buffets,student);
             pthread_mutex_unlock(&buffet_first_position_mutex);
             globals_set_students(--number_of_students);
+            //printf(number_of_students);
             break;
         }if (buffets[i].queue_right[0] == 0){
             student->_id_buffet = buffets[i]._id;
@@ -103,6 +104,7 @@ void worker_gate_insert_queue_buffet(student_t *student)
             buffet_queue_insert(buffets,student);
             pthread_mutex_unlock(&buffet_first_position_mutex);
             globals_set_students(--number_of_students);
+            //printf(number_of_stuents);
             break;
         }
     }
