@@ -108,8 +108,8 @@ void buffet_next_step(buffet_t *self, student_t *student)
             int position = student->_buffet_position;
             /* Lock no mutex da próxima posição (bacia) da fila do buffet*/
             pthread_mutex_lock(&self->mutex_queue_left[position + 1]);
-            self->queue_left[position] = 0;
-            self->queue_left[position + 1] = student->_id;
+            buffet_student->queue_left[position] = 0;
+            buffet_student->queue_left[position + 1] = student->_id;
             if (student->_buffet_position == 3){
                 printf("student %d no %d pos %d \n", student->_id, student->_id_buffet, student->_buffet_position);
             }
@@ -129,8 +129,8 @@ void buffet_next_step(buffet_t *self, student_t *student)
             int position = student->_buffet_position;
             /* Lock no mutex da próxima posição (bacia) da fila do buffet*/
             pthread_mutex_lock(&self->mutex_queue_right[position + 1]);
-            self->queue_right[position] = 0;
-            self->queue_right[position + 1] = student->_id;
+            buffet_student->queue_right[position] = 0;
+            buffet_student->queue_right[position + 1] = student->_id;
             if (student->_buffet_position == 0){
                 /* Sempre que a primeira posição da fila de qualquer buffet fica vaga damos um post(incremento) no semafaro da catraca */
                 sem_post(&ratchet);
