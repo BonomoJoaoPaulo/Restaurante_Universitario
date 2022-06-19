@@ -171,7 +171,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
         student->_buffet_position = -1;
         printf("O student %d saiu do buffet. \n", student->_id);
         count++;
-        printf("Students ja servidos: %d", count);
+        printf("Students ja servidos: %d\n", count);
     }
 }
 
