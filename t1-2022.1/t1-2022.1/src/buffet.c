@@ -16,6 +16,11 @@ void *buffet_run(void *arg)
     int all_students_entered = FALSE;
     buffet_t *self = (buffet_t *)arg;
 
+    for (int i = 0; i < 5; i++)
+    {
+        pthread_mutex_init(&self->mutex_serving[i],NULL);
+    }
+
     /*  O buffet funciona enquanto houver alunos na fila externa. */
     while (all_students_entered == FALSE)
     {
@@ -32,6 +37,8 @@ void *buffet_run(void *arg)
     {
         pthread_mutex_destroy(&self->mutex_queue_left[i]);
         pthread_mutex_destroy(&self->mutex_queue_right[i]);
+        pthread_mutex_destroy(&self->mutex_serving[i]);
+        
     }
     pthread_exit(NULL);
 }

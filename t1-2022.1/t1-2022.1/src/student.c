@@ -12,9 +12,9 @@
 #include "table.h"
 
 /* Mutex para somente um estudante se servir por vez. */
-pthread_mutex_t student_serve_mutex;
+//pthread_mutex_t student_serve_mutex;
 /* Mutex para evitar que dois estudantes se sente no mesmo lugar. */
-// pthread_mutex_t student_seat_mutex;
+pthread_mutex_t student_seat_mutex;
 /* Mutex para somente um estudante sair do RU por vez (evitando erro no get e set do valor de number_of_students). */
 pthread_mutex_t student_leave_mutex;
 /* Mutex para evitar que dois estudantes sejam inseridos na mesma posicao da fila de fora. */
