@@ -14,6 +14,7 @@
 pthread_mutex_t student_serve_mutex;
 pthread_mutex_t student_seat_mutex;
 pthread_mutex_t student_leave_mutex;
+pthread_mutex_t outside_queue_mutex;
 sem_t places_to_seat;
 
 
@@ -27,8 +28,13 @@ void* student_run(void *arg)
     pthread_mutex_init(&student_serve_mutex, NULL);
     pthread_mutex_init(&student_seat_mutex, NULL);
     pthread_mutex_init(&student_leave_mutex, NULL);
+    pthread_mutex_init(&outside_queue_mutex, NULL);
     sem_init(&places_to_seat, 0, number_of_tables*seats_per_table);
 
+    pthread_mutex_lock(&outside_queue_mutex);
+    queue_t *outside_queue = globals_get_queue();
+    queue_insert(outside_queue, self);
+    pthread_mutex_unlock(&outside_queue_mutex);
     msleep(1000);
     worker_gate_insert_queue_buffet(self);
     msleep(1000);
@@ -40,6 +46,7 @@ void* student_run(void *arg)
     pthread_mutex_destroy(&student_serve_mutex);
     pthread_mutex_destroy(&student_seat_mutex);
     pthread_mutex_destroy(&student_leave_mutex);
+    pthread_mutex_destroy(&outside_queue_mutex);
 };
 
 void student_seat(student_t *self, table_t *table)
@@ -70,7 +77,8 @@ void student_serve(student_t *self)
     while (self->_buffet_position != -1)
     {
         if (self->_wishes[self->_buffet_position] == 1)
-        {
+        {   
+            msleep(5000);
             pthread_mutex_lock(&student_serve_mutex);
             //printf("student %d ate? %d \n", self->_id, self->_wishes[self->_buffet_position]);
             buffets[self->_id_buffet]._meal[self->_buffet_position]--;
