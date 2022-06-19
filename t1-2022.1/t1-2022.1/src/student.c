@@ -14,7 +14,7 @@
 /* Mutex para somente um estudante se servir por vez. */
 pthread_mutex_t student_serve_mutex;
 /* Mutex para evitar que dois estudantes se sente no mesmo lugar. */
-pthread_mutex_t student_seat_mutex;
+// pthread_mutex_t student_seat_mutex;
 /* Mutex para somente um estudante sair do RU por vez (evitando erro no get e set do valor de number_of_students). */
 pthread_mutex_t student_leave_mutex;
 /* Mutex para evitar que dois estudantes sejam inseridos na mesma posicao da fila de fora. */
@@ -29,7 +29,7 @@ void *student_run(void *arg)
     int seats_per_table = globals_get_seats_per_table();
     int number_of_tables = globals_get_number_of_tables();
 
-    pthread_mutex_init(&student_serve_mutex, NULL);
+    // pthread_mutex_init(&student_serve_mutex, NULL);
     pthread_mutex_init(&student_seat_mutex, NULL);
     pthread_mutex_init(&student_leave_mutex, NULL);
     pthread_mutex_init(&outside_queue_mutex, NULL);
@@ -52,7 +52,7 @@ void *student_run(void *arg)
     student_leave(self, tables);
 
     pthread_exit(NULL);
-    pthread_mutex_destroy(&student_serve_mutex);
+    // pthread_mutex_destroy(&student_serve_mutex);
     pthread_mutex_destroy(&student_seat_mutex);
     pthread_mutex_destroy(&student_leave_mutex);
     pthread_mutex_destroy(&outside_queue_mutex);
@@ -99,10 +99,10 @@ void student_serve(student_t *self)
         {
             msleep(5000);
             /* Utilizacao do mutex explicada na linha 14.*/
-            pthread_mutex_lock(&student_serve_mutex);
+            pthread_mutex_lock(&buffets[self->_id_buffet].mutex_serving[self->_buffet_position]);
             /* Decrementa uma porcao daquela bacia. */
             buffets[self->_id_buffet]._meal[self->_buffet_position]--;
-            pthread_mutex_unlock(&student_serve_mutex);
+            pthread_mutex_unlock(&buffets[self->_id_buffet].mutex_serving[self->_buffet_position]);
         }
         buffet_next_step(buffets, self);
     }
