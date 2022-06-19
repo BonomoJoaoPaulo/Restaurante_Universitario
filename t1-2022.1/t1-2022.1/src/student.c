@@ -126,9 +126,9 @@ void student_leave(student_t *self, table_t *table)
     /* Decrementa o numero de estudantes que ainda nao sairam do RU. */
     globals_set_students(number_of_students - 1);
     /* Recebe esse valor atualizado. */
-    int number_of_students = globals_get_students();
+    int last_number_of_students = globals_get_students();
     /* 'Printa' esse valor. */
-    printf("Faltam %d estudantes saírem do RU.\n", number_of_students);
+    printf("Faltam %d estudantes saírem do RU.\n", last_number_of_students);
     /* Libera o mutex. */
     pthread_mutex_unlock(&student_leave_mutex);
 }
