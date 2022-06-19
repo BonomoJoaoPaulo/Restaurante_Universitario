@@ -85,27 +85,26 @@ void worker_gate_insert_queue_buffet(student_t *student)
     int number_of_buffets = globals_get_number_of_buffets();
     int sval2;
     sem_getvalue(&ratchet, &sval2);
-    printf("Semaphore value: %d\n", sval2);
+    int number_of_students = globals_get_students();
+    //printf("Semaphore value: %d\n", sval2);
     sem_wait(&ratchet);// semafaro que evita espera ocupada
     pthread_mutex_lock(&buffet_first_position_mutex);  
-    for (int i = 0; i < number_of_buffets; i++)
-    {
-        int number_of_students = globals_get_students();
+    for (int i = 0; i < number_of_buffets; i++){
         if (buffets[i].queue_left[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'L';
             buffet_queue_insert(buffets,student);
             pthread_mutex_unlock(&buffet_first_position_mutex);
-            globals_set_students(number_of_students - 1);
-            printf("ugauga %d\n",number_of_students);
+            globals_set_students(--number_of_students);
+            //printf(number_of_students);
             break;
         }if (buffets[i].queue_right[0] == 0){
             student->_id_buffet = buffets[i]._id;
             student->left_or_right = 'R';
             buffet_queue_insert(buffets,student);
             pthread_mutex_unlock(&buffet_first_position_mutex);
-            globals_set_students(number_of_students - 1);
-            printf("ugauga %d\n",number_of_students);
+            globals_set_students(--number_of_students);
+            //printf(number_of_stuents);
             break;
         }
     }
