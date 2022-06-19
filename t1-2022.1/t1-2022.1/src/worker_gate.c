@@ -68,19 +68,17 @@ void *worker_gate_run(void *arg)
 
     /* inicializacao do semaforo ratchet com o dobro do numero de buffets porque temos 2 filas (esquerda e direita). */
     sem_init(&ratchet, 0, number_of_buffets * 2);
-    // int sval2;
-    // sem_getvalue(&ratchet, &sval2);
 
     /* Enquanto todos os estudantes nao tiverem entrado... */
     while (all_students_entered == FALSE)
     {
-        // worker_gate_look_buffet();
+
         /* Chamada da funcao que remove o primeiro estudante da fila de fora. */
         worker_gate_remove_student();
 
         /* Chamada da funcao worker_gate_look_queue em uma variavel para usarmos no if seguinte. */
         int students_on_queue = worker_gate_look_queue();
-        // int number_of_students = globals_get_students();
+
         /* Se nao houver mais ninguem do lado de fora, para de remover na fila de fora. */
         if (students_on_queue != 0)
         {
@@ -90,6 +88,7 @@ void *worker_gate_run(void *arg)
 
     pthread_mutex_destroy(&buffet_first_position_mutex);
     pthread_mutex_destroy(&remove_student_mutex);
+    printf("O Worker Gate foi encerrado.\n");
     pthread_exit(NULL);
 }
 
@@ -108,15 +107,10 @@ void worker_gate_finalize(worker_gate_t *self)
 
 void worker_gate_insert_queue_buffet(student_t *student)
 {
-    // printf("chamou a funcao");
-    // queue_t *students_queue = globals_get_queue();
-    // queue_insert(students_queue, student);
     /* Pegamos todos os buffets e o numero total de buffets. */
     buffet_t *buffets = globals_get_buffets();
     int number_of_buffets = globals_get_number_of_buffets();
-    // int sval2;
-    // sem_getvalue(&ratchet, &sval2);
-    // printf("Semaphore value: %d\n", sval2);
+
     /*  Wait no semafaro que evita espera ocupada. */
     sem_wait(&ratchet);
 
@@ -126,7 +120,6 @@ void worker_gate_insert_queue_buffet(student_t *student)
     /* Execucao dentro de for para cobrir todos os buffets. */
     for (int i = 0; i < number_of_buffets; i++)
     {
-        int number_of_students = globals_get_students();
         /* Verifica se a primeira posicao da fila da esquerda esta vaga. */
         if (buffets[i].queue_left[0] == 0)
         {
@@ -136,7 +129,6 @@ void worker_gate_insert_queue_buffet(student_t *student)
             buffet_queue_insert(buffets, student);
             /* Unlock no mutex da primeira posicao do buffet. */
             pthread_mutex_unlock(&buffet_first_position_mutex);
-            // printf("ugauga %d\n", number_of_students);
             break;
         }
         /* Verifica se a primeira posicao da fila da direita esta vaga. */
@@ -148,7 +140,6 @@ void worker_gate_insert_queue_buffet(student_t *student)
             buffet_queue_insert(buffets, student);
             /* Unlock no mutex da primeira posicao do buffet. */
             pthread_mutex_unlock(&buffet_first_position_mutex);
-            // printf("ugauga %d\n", number_of_students);
             break;
         }
     }
