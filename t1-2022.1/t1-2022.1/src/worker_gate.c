@@ -12,7 +12,7 @@ sem_t ratchet;  // semafaro catraca para o worker gate so procurar posicoes livr
 
 void worker_gate_look_queue()
 {   
- 
+    
 }
 
 void worker_gate_remove_student()
@@ -81,6 +81,8 @@ void worker_gate_finalize(worker_gate_t *self)
 void worker_gate_insert_queue_buffet(student_t *student)
 {
     //printf("chamou a funcao");
+    //queue_t *students_queue = globals_get_queue();
+    //queue_insert(students_queue, student);
     buffet_t *buffets = globals_get_buffets();
     int number_of_buffets = globals_get_number_of_buffets();
     int sval2;
@@ -96,7 +98,6 @@ void worker_gate_insert_queue_buffet(student_t *student)
             student->left_or_right = 'L';
             buffet_queue_insert(buffets,student);
             pthread_mutex_unlock(&buffet_first_position_mutex);
-            globals_set_students(number_of_students - 1);
             printf("ugauga %d\n",number_of_students);
             break;
         }if (buffets[i].queue_right[0] == 0){
@@ -104,7 +105,6 @@ void worker_gate_insert_queue_buffet(student_t *student)
             student->left_or_right = 'R';
             buffet_queue_insert(buffets,student);
             pthread_mutex_unlock(&buffet_first_position_mutex);
-            globals_set_students(number_of_students - 1);
             printf("ugauga %d\n",number_of_students);
             break;
         }

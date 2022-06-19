@@ -13,7 +13,9 @@
 
 pthread_mutex_t student_serve_mutex;
 pthread_mutex_t student_seat_mutex;
+pthread_mutex_t student_leave_mutex;
 sem_t places_to_seat;
+
 
 void* student_run(void *arg)
 {
@@ -24,6 +26,7 @@ void* student_run(void *arg)
 
     pthread_mutex_init(&student_serve_mutex, NULL);
     pthread_mutex_init(&student_seat_mutex, NULL);
+    pthread_mutex_init(&student_leave_mutex, NULL);
     sem_init(&places_to_seat, 0, number_of_tables*seats_per_table);
 
     msleep(1000);
@@ -36,6 +39,7 @@ void* student_run(void *arg)
     pthread_exit(NULL);
     pthread_mutex_destroy(&student_serve_mutex);
     pthread_mutex_destroy(&student_seat_mutex);
+    pthread_mutex_destroy(&student_leave_mutex);
 };
 
 void student_seat(student_t *self, table_t *table)
@@ -77,14 +81,18 @@ void student_serve(student_t *self)
 }
 
 void student_leave(student_t *self, table_t *table)
-{   
+{
+    pthread_mutex_lock(&student_leave_mutex);
+    int number_of_students = globals_get_students();
     /* t recebe o id da mesa que o student esta sentado */
-    msleep(5000);
+    msleep(100);
     int t = self->_id_table_seating;
     table[t]._empty_seats++;
     sem_post(&places_to_seat);
-    printf("student %d liberou na mesa %d\n", self->_id, t);
-            
+    printf("O student %d liberou um espaço na mesa %d\n", self->_id, t);
+    globals_set_students(number_of_students - 1);
+    printf("Faltam %d estudantes saírem do RU.\n", number_of_students);
+    pthread_mutex_unlock(&student_leave_mutex);
 }
 
 /* --------------------------------------------------------- */
