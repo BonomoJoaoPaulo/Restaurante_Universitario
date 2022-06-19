@@ -52,7 +52,7 @@ void student_seat(student_t *self, table_t *table)
             tables[i]._empty_seats --;
             self->_id_table_seating = tables[i]._id;
             pthread_mutex_unlock(&student_seat_mutex);
-            printf("%d espacos livres na mesa %d\n", tables[i]._empty_seats, tables[i]._id);
+            //printf("%d espacos livres na mesa %d\n", tables[i]._empty_seats, tables[i]._id);
             break;
         }
     }
@@ -83,7 +83,7 @@ void student_leave(student_t *self, table_t *table)
     int t = self->_id_table_seating;
     table[t]._empty_seats++;
     sem_post(&places_to_seat);
-    printf("student %d liberou na mesa %d\n", self->_id, t);
+    //printf("student %d liberou na mesa %d\n", self->_id, t);
             
 }
 

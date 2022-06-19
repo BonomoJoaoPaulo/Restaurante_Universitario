@@ -114,6 +114,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
             //printf("did it set?%d\n",buffets_global[student->_id_buffet].queue_left[position+1]);
             if (student->_buffet_position == 0){
                 /* Sempre que a primeira posição da fila de qualquer buffet fica vaga damos um post(incremento) no semafaro da catraca */
+                //printf("%d deu post\n", student->_id);
                 sem_post(&ratchet);
             }
             student->_buffet_position ++;
@@ -131,7 +132,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
             self[student->_id_buffet].queue_right[position + 1] = student->_id;
             if (student->_buffet_position == 0){
                 /* Sempre que a primeira posição da fila de qualquer buffet fica vaga damos um post(incremento) no semafaro da catraca */
-                printf("deu post\n");
+                //printf("%d deu post\n", student->_id);
                 sem_post(&ratchet);
             }
             student->_buffet_position ++;
@@ -153,7 +154,7 @@ void buffet_next_step(buffet_t *self, student_t *student)
 
         /* Define a posição do estudante no buffet como -1 (fora) */
         student->_buffet_position = -1;
-        printf("student %d saiu: %d \n", student->_id, student->_buffet_position);
+        //printf("student %d saiu: %d \n", student->_id, student->_buffet_position);
         cont++;
         //printf("%d", cont);
     }
