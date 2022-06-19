@@ -98,7 +98,7 @@ void student_serve(student_t *self)
         if (self->_wishes[self->_buffet_position] == 1)
         {
             msleep(5000);
-            if (self->left_or_right == "L")
+            if (self->left_or_right == 'L')
             {
                 /* Utilizacao do mutex explicada na linha 14.*/
                 pthread_mutex_lock(&buffets[self->_id_buffet].mutex_serving_left[self->_buffet_position]);

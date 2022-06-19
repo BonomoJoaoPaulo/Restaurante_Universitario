@@ -18,7 +18,7 @@ void *buffet_run(void *arg)
 
     for (int i = 0; i < 5; i++)
     {
-        pthread_mutex_init(&self->mutex_serving_left[i], NULL);
+        pthread_mutex_init(&self->mutex_serving_right[i], NULL);
         pthread_mutex_init(&self->mutex_serving_left[i], NULL);
     }
 
@@ -38,7 +38,7 @@ void *buffet_run(void *arg)
     {
         pthread_mutex_destroy(&self->mutex_queue_left[i]);
         pthread_mutex_destroy(&self->mutex_queue_right[i]);
-        pthread_mutex_destroy(&self->mutex_serving_left[i]);
+        pthread_mutex_destroy(&self->mutex_serving_right[i]);
         pthread_mutex_destroy(&self->mutex_serving_left[i]);
     }
     pthread_exit(NULL);
