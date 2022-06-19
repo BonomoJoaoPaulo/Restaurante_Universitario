@@ -17,7 +17,8 @@ typedef struct buffet
     pthread_mutex_t mutex_queue_right[5];
 
     /* Criacao de um mutex para cada bacia (para somente um estudante acessar determinada bacia por vez). */
-    pthread_mutex_t mutex_serving[5];
+    pthread_mutex_t mutex_serving_left[5];
+    pthread_mutex_t mutex_serving_right[5];
 
     /* Thread do buffet   */
     pthread_t thread;
