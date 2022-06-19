@@ -12,7 +12,7 @@
 #include "table.h"
 
 /* Mutex para somente um estudante se servir por vez. */
-//pthread_mutex_t student_serve_mutex;
+// pthread_mutex_t student_serve_mutex;
 /* Mutex para evitar que dois estudantes se sente no mesmo lugar. */
 pthread_mutex_t student_seat_mutex;
 /* Mutex para somente um estudante sair do RU por vez (evitando erro no get e set do valor de number_of_students). */
@@ -98,11 +98,22 @@ void student_serve(student_t *self)
         if (self->_wishes[self->_buffet_position] == 1)
         {
             msleep(5000);
-            /* Utilizacao do mutex explicada na linha 14.*/
-            pthread_mutex_lock(&buffets[self->_id_buffet].mutex_serving[self->_buffet_position]);
-            /* Decrementa uma porcao daquela bacia. */
-            buffets[self->_id_buffet]._meal[self->_buffet_position]--;
-            pthread_mutex_unlock(&buffets[self->_id_buffet].mutex_serving[self->_buffet_position]);
+            if (self->left_or_right == "L")
+            {
+                /* Utilizacao do mutex explicada na linha 14.*/
+                pthread_mutex_lock(&buffets[self->_id_buffet].mutex_serving_left[self->_buffet_position]);
+                /* Decrementa uma porcao daquela bacia. */
+                buffets[self->_id_buffet]._meal[self->_buffet_position]--;
+                pthread_mutex_unlock(&buffets[self->_id_buffet].mutex_serving_left[self->_buffet_position]);
+            }
+            else
+            {
+                /* Utilizacao do mutex explicada na linha 14.*/
+                pthread_mutex_lock(&buffets[self->_id_buffet].mutex_serving_right[self->_buffet_position]);
+                /* Decrementa uma porcao daquela bacia. */
+                buffets[self->_id_buffet]._meal[self->_buffet_position]--;
+                pthread_mutex_unlock(&buffets[self->_id_buffet].mutex_serving_right[self->_buffet_position]);
+            }
         }
         buffet_next_step(buffets, self);
     }
